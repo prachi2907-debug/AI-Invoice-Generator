@@ -36,11 +36,11 @@ const App = () => {
 
         {/* Clerk Auth Pages */}
         <Route
-          path="/login"
+          path="/login/*"
           element={<SignIn routing="path" path="/login" />}
         />
         <Route
-          path="/signup"
+          path="/signup/*"
           element={<SignUp routing="path" path="/signup" />}
         />
 
