@@ -14,8 +14,7 @@ if (!API_KEY) {
   );
 }
 
-// Instantiate the client. If no key is present, the SDK may still try ADC
-// but we'll check and return a clear error earlier if absent.
+
 const ai = new GoogleGenAI({ apiKey: API_KEY });
 
 // Candidate models to try (order matters)
@@ -59,19 +58,18 @@ Output: valid JSON only (no surrounding code fences, no commentary).
 }
 
 async function tryGenerateWithModel(modelName, prompt) {
-  // Wrap call in try/catch; extract text robustly from several possible shapes
+  
   const response = await ai.models.generateContent({
     model: modelName,
     contents: prompt,
-    // optionals: config: { temperature: 0, maxOutputTokens: 1024 }
+    
   });
 
-  // The SDK historically may provide `.text`, or nested outputs.
-  // Try a few common possibilities in order.
+  
   let text =
-    // most modern examples: response.text
+    
     (response && typeof response.text === "string" && response.text) ||
-    // some shapes: response?.output?.[0]?.content?.[0]?.text
+    
     (response &&
       response.output &&
       Array.isArray(response.output) &&
@@ -80,16 +78,16 @@ async function tryGenerateWithModel(modelName, prompt) {
       Array.isArray(response.output[0].content) &&
       response.output[0].content[0] &&
       response.output[0].content[0].text) ||
-    // alternate: response?.outputs?.[0]?.text
+    
     (response &&
       response.outputs &&
       Array.isArray(response.outputs) &&
       response.outputs[0] &&
       (response.outputs[0].text || response.outputs[0].content)) ||
-    // fallback: JSON-stringify the whole response (so we at least have something)
+    
     null;
 
-  // If some nested value is an object with `text` property
+ 
   if (!text && response && Array.isArray(response.outputs)) {
     const joined = response.outputs
       .map((o) => {
@@ -124,7 +122,7 @@ async function tryGenerateWithModel(modelName, prompt) {
 
 aiInvoiceRouter.post("/generate", async (req, res) => {
   try {
-    // Quick check: require an API key (explicit) — makes failure clearer for devs
+    
     if (!API_KEY) {
       return res.status(500).json({
         success: false,

@@ -3,7 +3,7 @@ import path from "path";
 import { getAuth } from "@clerk/express";
 import Invoice from "../models/invoiceModel.js";
 
-const API_BASE = "http://localhost:4000";
+const API_BASE = process.env.BACKEND_URL;
 
 /** Compute subtotal, tax, and total */
 function computeTotals(items = [], taxPercent = 0) {
@@ -64,24 +64,23 @@ function uploadedFilesToUrls(req) {
 
 /** Generate a collision-resistant invoice number (and check DB for existing) */
 async function generateUniqueInvoiceNumber(attempts = 8) {
-  // Try multiple times. Use timestamp + random to minimize collisions.
   for (let i = 0; i < attempts; i++) {
-    // include date and random suffix
+    
     const ts = Date.now().toString();
     const suffix = Math.floor(Math.random() * 900000).toString().padStart(6, "0");
     const candidate = `INV-${ts.slice(-6)}-${suffix}`;
 
-    // quick existence check
-    /* eslint-disable no-await-in-loop */
+    
+    
     const exists = await Invoice.exists({ invoiceNumber: candidate });
     if (!exists) return candidate;
-    /* eslint-enable no-await-in-loop */
+  
 
-    // small delay then retry (very short)
+    
     await new Promise((r) => setTimeout(r, 2));
   }
 
-  // fallback: use ObjectId string (guaranteed unique)
+  
   return new mongoose.Types.ObjectId().toString();
 }
 
@@ -120,7 +119,7 @@ export async function createInvoice(req, res) {
       }
     }
 
-    // generate a unique invoice number (or use provided)
+    
     let invoiceNumber = invoiceNumberProvided || (await generateUniqueInvoiceNumber());
 
     // Build document
@@ -210,7 +209,7 @@ export async function createInvoice(req, res) {
   }
 }
 
-/* ----------------- LIST ----------------- */
+/* LIST */
 export async function getInvoices(req, res) {
   try {
     const { userId } = getAuth(req) || {};
@@ -242,7 +241,7 @@ export async function getInvoices(req, res) {
   }
 }
 
-/* ----------------- GET BY ID ----------------- */
+/*  GET BY ID  */
 export async function getInvoiceById(req, res) {
   try {
     const { userId } = getAuth(req) || {};
@@ -273,7 +272,7 @@ export async function getInvoiceById(req, res) {
   }
 }
 
-/* ----------------- UPDATE ----------------- */
+/*  UPDATE  */
 export async function updateInvoice(req, res) {
   try {
     const { userId } = getAuth(req) || {};
@@ -364,7 +363,7 @@ export async function updateInvoice(req, res) {
     Object.keys(update).forEach((k) => update[k] === undefined && delete update[k]);
 
     const updated = await Invoice.findOneAndUpdate(
-      { _id: existing._id }, // ensure update by _id to avoid surprises
+      { _id: existing._id }, 
       { $set: update },
       { new: true, runValidators: true }
     );
@@ -388,7 +387,7 @@ export async function updateInvoice(req, res) {
   }
 }
 
-/* ----------------- DELETE ----------------- */
+/*  DELETE  */
 export async function deleteInvoice(req, res) {
   try {
     const { userId } = getAuth(req) || {};

@@ -2,7 +2,7 @@ import path from "path";
 import { getAuth } from "@clerk/express";
 import BusinessProfile from "../models/businessProfileModel.js";
 
-const API_BASE = "http://localhost:4000";
+const API_BASE = process.env.BACKEND_URL;
 
 /* ---------------------- File to URL Converter ---------------------- */
 function uploadedFilesToUrls(req) {
@@ -20,12 +20,10 @@ function uploadedFilesToUrls(req) {
   return urls;
 }
 
-/* ===========================================================
-   CREATE BUSINESS PROFILE — Clerk Auth (direct use)
-   =========================================================== */
+/* CREATE BUSINESS PROFILE — Clerk Auth (direct use) */
 export async function createBusinessProfile(req, res) {
   try {
-    const { userId } = getAuth(req);   // ✅ Clerk direct
+    const { userId } = getAuth(req);   // Clerk direct
 
     if (!userId) {
       return res.status(401).json({ success: false, message: "Authentication required" });
@@ -59,12 +57,10 @@ export async function createBusinessProfile(req, res) {
   }
 }
 
-/* ===========================================================
-   UPDATE BUSINESS PROFILE — Clerk Auth (direct use)
-   =========================================================== */
+/* UPDATE BUSINESS PROFILE — Clerk Auth (direct use) */
 export async function updateBusinessProfile(req, res) {
   try {
-    const { userId } = getAuth(req);   // ✅ Clerk direct
+    const { userId } = getAuth(req);   //  Clerk direct
 
     if (!userId) {
       return res.status(401).json({ success: false, message: "Authentication required" });
@@ -116,12 +112,10 @@ export async function updateBusinessProfile(req, res) {
   }
 }
 
-/* ===========================================================
-   GET MY BUSINESS PROFILE — Clerk Auth (direct use)
-   =========================================================== */
+/* GET MY BUSINESS PROFILE — Clerk Auth (direct use) */
 export async function getMyBusinessProfile(req, res) {
   try {
-    const { userId } = getAuth(req);  // ✅ Clerk direct
+    const { userId } = getAuth(req);  //  Clerk direct
 
     if (!userId) {
       return res.status(401).json({ success: false, message: "Authentication required" });
