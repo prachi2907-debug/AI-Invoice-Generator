@@ -35,11 +35,9 @@ export default function Navbar() {
         try {
           localStorage.setItem(TOKEN_KEY, token);
         } catch (e) {
-          // ignore localStorage errors (private mode, etc.)
-          // console.warn("Saving token to localStorage failed:", e);
+          
         }
-        // optional debug
-        // console.log("🔐 Clerk token saved → localStorage");
+        
         return token;
       } else {
         return null;

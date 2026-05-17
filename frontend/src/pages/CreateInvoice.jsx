@@ -9,10 +9,9 @@ import {
 } from "../assets/dummyStyles";
 
 /* ---------- API BASE ---------- */
-const API_BASE = "http://localhost:4000";
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:4000";
 
-/* ---------- storage helpers (unchanged) ---------- */
-/* ----------------- frontend-only: normalize image URLs ----------------- */
+
 function resolveImageUrl(url) {
   if (!url) return null;
   const s = String(url).trim();
